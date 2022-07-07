@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "put_cargos": [],
+  "cargo_space": {
+    "id": "1111",
+    "mass": 20,
+    "size": {
+      "width": 800,
+      "height": 2300,
+      "length": 1200
+    },
+    "params": {
+      "protrusion": {
+        "width": 0,
+        "length": 0
+      },
+      "indentation": {
+        "width": 0,
+        "length": 0
+      }
+    },
+    "carrying_capacity": 800000
+  },
+  "cargo_groups": [
+    {
+      "mass": 6357,
+      "size": {
+        "width": 190,
+        "height": 237,
+        "length": 260
+      },
+      "sort": 1,
+      "count": 1,
+      "group_id": "11111",
+      "stacking": true,
+      "turnover": true,
+      "overhang_angle": 50,
+      "stacking_limit": 0,
+      "stacking_is_limited": false
+    }
+  ],
+  "calculation_params": {
+    "packing_side": 0,
+    "calculation_id": "11111",
+    "accounting_center_of_mass": false
+  }
+}
