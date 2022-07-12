@@ -15,6 +15,3 @@ class Box:
 
     def getPosition(self):
         return self.__position
-
-    
-
