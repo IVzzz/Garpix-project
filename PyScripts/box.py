@@ -6,7 +6,7 @@ class Box:
         self.length = length
         self.boxCount = boxCount
         self.mass = mass
-        self.__position = position
+        self.__position = 0
 
     def setPosition(self, position):
         self.__position = position
