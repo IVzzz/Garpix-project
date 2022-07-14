@@ -12,16 +12,16 @@ class Box:
         self.boxCount = boxCount
         self.mass = mass
         # Position is the center of parallelepiped
-        self.__position = 0
+        self.__position = {'x': 0, 'y': 0, 'z': 0}
         logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
-    def setPosition(self, position):
-        self.__position = position
+    def setPosition(self, x: int, y: int, z: int):
+        self.__position.update({'x': x, 'y': y, 'z': z})
 
     def getPosition(self):
-        return self.__position
+        return self.__position.copy()
 
-    # rotate box for DEGREES along the selected AXIS
+    # rotate box clockwise by DEGREES along the selected AXIS
     def rotate(self, degrees: int, axis: str):
         buffer = 0
         if degrees == 90:
@@ -37,4 +37,3 @@ class Box:
                 buffer = self.length
                 self.length = self.width
                 self.width = buffer
-        
