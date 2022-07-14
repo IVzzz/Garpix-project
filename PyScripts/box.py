@@ -21,19 +21,18 @@ class Box:
     def getPosition(self):
         return self.__position.copy()
 
-    # rotate box clockwise by DEGREES along the selected AXIS
-    def rotate(self, degrees: int, axis: str):
+    # rotate box clockwise by 90 degrees along the selected AXIS
+    def rotate(self, axis: str):
         buffer = 0
-        if degrees == 90:
-            if axis == "x":
-                buffer = self.width
-                self.width = self.height
-                self.height = buffer
-            elif axis == "y":
-                buffer = self.length
-                self.length = self.height
-                self.height = buffer
-            elif axis == "z":
-                buffer = self.length
-                self.length = self.width
-                self.width = buffer
+        if axis == "x":
+            buffer = self.width
+            self.width = self.height
+            self.height = buffer
+        elif axis == "y":
+            buffer = self.length
+            self.length = self.height
+            self.height = buffer
+        elif axis == "z":
+            buffer = self.length
+            self.length = self.width
+            self.width = buffer
