@@ -6,7 +6,8 @@ import numpy
 class Box:
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
-    def __init__(self, groupId: int, width: int, height: int, length: int, boxCount: int, mass: float):
+    def __init__(self, id: int, groupId: int, width: int, height: int, length: int, boxCount: int, mass: float):
+        self.id = id
         self.groupId = groupId
         self.width = width
         self.height = height
@@ -76,3 +77,6 @@ class Box:
         vertices = numpy.vstack((vertices, vertex))
 
         return vertices
+
+    def printBoxData(self):
+        return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
