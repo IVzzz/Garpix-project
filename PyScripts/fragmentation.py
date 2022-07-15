@@ -24,4 +24,4 @@ def fragmentationBoxes(boxes):
                 buffer = (boxes[i][2][t - 2], boxes[i][2][t - 1], boxes[i][0], boxes[i][3])
                 classes.setdefault(keyClass, []).append(buffer)
     sortedClasses = dict(sorted(classes.items()))
-    return
+    return sortedClasses
