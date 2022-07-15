@@ -39,9 +39,11 @@ def qsort(array):
                 highArray.append(item)
             else:
                 equalArray.append(item)
-        return qsort(lowArray) + equalArray + qsort(highArray)
+        return qsort(highArray) + equalArray + qsort(lowArray)
 
 
 boxes = qsort(boxes)
 for item in boxes:
     logging.info(item.getBoxData())
+
+# Loading container in x digit(by length)
