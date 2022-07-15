@@ -78,5 +78,6 @@ class Box:
 
         return vertices
 
-    def printBoxData(self):
-        return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
+    def getBoxData(self):
+        #return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
+        return f' size: w-{self.width} l-{self.length} h-{self.height}'

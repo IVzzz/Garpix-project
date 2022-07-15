@@ -2,8 +2,8 @@ def fragmentationBoxes(boxes):
 
     classes = {}
 
-    for i in range (1, len(boxes)):
-        for t in range (3):
+    for i in range(1, len(boxes)):
+        for t in range(3):
             keyClass = boxes[i][2][t]
             idBox = boxes[i][0]
             idFlag = False
