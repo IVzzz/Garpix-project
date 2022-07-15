@@ -1,4 +1,6 @@
 import logging
+import math
+import numpy
 
 
 class Box:
@@ -12,18 +14,18 @@ class Box:
         self.boxCount = boxCount
         self.mass = mass
         # Position is the center of parallelepiped
-        self.__position = {'x': 0, 'y': 0, 'z': 0}
+        self.__position = []
         logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
     def setPosition(self, x: int, y: int, z: int):
-        self.__position.update({'x': x, 'y': y, 'z': z})
+        self.__position = [x, y, z]
 
     def getPosition(self):
         return self.__position.copy()
 
     # rotate box clockwise by 90 degrees along the selected AXIS
     def rotate(self, axis: str):
-        buffer = 0
+
         if axis == "x":
             buffer = self.width
             self.width = self.height
@@ -36,3 +38,41 @@ class Box:
             buffer = self.length
             self.length = self.width
             self.width = buffer
+
+    # Function returns numpy array of 4 vertexes of the box
+    def getVertices(self):
+        diagonal = math.sqrt(self.width * self.width + self.length * self.length + self.height * self.height)
+
+        vertices = numpy.array([])
+        vertex = numpy.array([0, 0, 0])
+
+        halfWidth = self.width/2
+        halfLength = self.length/2
+        halfHeight = self.height/2
+
+        # Counting 8 vertices of the box by adding up position +- 1/2 * width/length/height
+        vertex = numpy.array([self.__position[0] + halfLength, self.__position[1] - halfWidth, self.__position[2] - halfHeight])
+        vertices = vertex
+
+        vertex = numpy.array([self.__position[0] - halfLength, self.__position[1] - halfWidth, self.__position[2] - halfHeight])
+        vertices = numpy.vstack((vertices, vertex))
+
+        vertex = [self.__position[0] - halfLength, self.__position[1] + halfWidth, self.__position[2] - halfHeight]
+        vertices = numpy.vstack((vertices, vertex))
+
+        vertex = [self.__position[0] + halfLength, self.__position[1] + halfWidth, self.__position[2] - halfHeight]
+        vertices = numpy.vstack((vertices, vertex))
+
+        vertex = [self.__position[0] + halfLength, self.__position[1] - halfWidth, self.__position[2] + halfHeight]
+        vertices = numpy.vstack((vertices, vertex))
+
+        vertex = [self.__position[0] - halfLength, self.__position[1] - halfWidth, self.__position[2] + halfHeight]
+        vertices = numpy.vstack((vertices, vertex))
+
+        vertex = [self.__position[0] - halfLength, self.__position[1] + halfWidth, self.__position[2] + halfHeight]
+        vertices = numpy.vstack((vertices, vertex))
+
+        vertex = [self.__position[0] + halfLength, self.__position[1] + halfWidth, self.__position[2] + halfHeight]
+        vertices = numpy.vstack((vertices, vertex))
+
+        return vertices
