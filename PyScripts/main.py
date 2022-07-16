@@ -8,9 +8,9 @@ from container import Container
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
 # Decoding data from json[START]
-filename = r"D:\PyProjects\Garpix-project\Data\_vg_85_bgg5jsons\0\30_cl.json"
+filepath = r"0\30_cl.json"
 
-with open(filename, encoding="utf8") as file:
+with open('..\Data\_vg_85_bgg5jsons\\' + filepath, encoding="utf8") as file:
     base = file.read()
 
 jsonString = '{"a":54, "b": 28}'
@@ -18,15 +18,19 @@ jsonString = '{"a":54, "b": 28}'
 aDict = json.loads(base)
 
 container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size'][0], aDict['cargo_space']['size'][1],
-                      aDict['cargo_space']['size'][2],  aDict['cargo_space']['carrying_capacity'], 0)
-logging.info(f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
-
+                      aDict['cargo_space']['size'][2], aDict['cargo_space']['carrying_capacity'], 0)
+logging.info(
+    f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
 
 boxes = []
 
 for item in aDict["cargo_groups"]:
     if item['mass'] <= container.maxWeight:
-        boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'], item['mass']))
+        boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'],
+                         item['mass']))
+aDict.clear()
+
+
 # Decoding data from json[END]
 
 # Sorting data by non-growth (quicksort)
@@ -57,9 +61,8 @@ for item in boxes:
 # Array contains the positions of loaded boxes
 # This loading just to be sure JSON encoding is working correct [START]
 container.putCargos.append(boxes[0])
-boxes[0].setPosition(boxes[0].length/2, boxes[0].width/2, boxes[0].height/2)
+boxes[0].setPosition(boxes[0].length / 2, boxes[0].width / 2, boxes[0].height / 2)
 container.currentWeight += boxes[0].mass
-
 
 # Putting cargos from zero pos along X asis (length) from the biggest to the smallest while we can
 for index in range(1, len(boxes)):
@@ -70,5 +73,9 @@ for index in range(1, len(boxes)):
         logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
 # This loading just to be sure JSON encoding is working correct [END]
 
-with open(filename, encoding='utf-8'):
+for item in container.putCargos:
+    aDict.update()
 
+with open('..\Data\_vg_85_bgg5jsons\\' + filepath, 'w', encoding='utf-8') as f:
+    #json.dump(aDict, f)
+    pass
