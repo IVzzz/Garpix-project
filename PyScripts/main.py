@@ -7,7 +7,7 @@ from container import Container
 
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
-# Extracting data from json[START]
+# Decoding data from json[START]
 filename = r"D:\PyProjects\Garpix-project\Data\_vg_85_bgg5jsons\0\30_cl.json"
 
 with open(filename, encoding="utf8") as file:
@@ -27,7 +27,7 @@ boxes = []
 for item in aDict["cargo_groups"]:
     if item['mass'] <= container.maxWeight:
         boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'], item['mass']))
-# Extracting data from json[END]
+# Decoding data from json[END]
 
 # Sorting data by non-growth (quicksort)
 def qsort(array):
@@ -55,6 +55,7 @@ for item in boxes:
 
 # Loading container in x digit(by length)
 # Array contains the positions of loaded boxes
+# This loading just to be sure JSON encoding is working correct [START]
 container.putCargos.append(boxes[0])
 boxes[0].setPosition(boxes[0].length/2, boxes[0].width/2, boxes[0].height/2)
 container.currentWeight += boxes[0].mass
@@ -67,3 +68,7 @@ for index in range(1, len(boxes)):
         boxes[index].setPosition(boxes[index - 1].length + boxes[index].length, boxes[index].width, boxes[index].height)
         container.currentWeight += boxes[index].mass
         logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
+# This loading just to be sure JSON encoding is working correct [END]
+
+with open(filename, encoding='utf-8'):
+
