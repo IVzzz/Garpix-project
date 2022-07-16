@@ -59,6 +59,7 @@ container.putCargos.append(boxes[0])
 boxes[0].setPosition(boxes[0].length/2, boxes[0].width/2, boxes[0].height/2)
 container.currentWeight += boxes[0].mass
 
+
 # Putting cargos from zero pos along X asis (length) from the biggest to the smallest while we can
 for index in range(1, len(boxes)):
     if container.maxWeight >= (container.currentWeight + boxes[index].mass):
