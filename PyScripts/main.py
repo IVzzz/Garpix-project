@@ -73,9 +73,18 @@ for index in range(1, len(boxes)):
         logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
 # This loading just to be sure JSON encoding is working correct [END]
 
-for item in container.putCargos:
-    aDict.update()
+array = []
 
-with open('..\Data\_vg_85_bgg5jsons\\' + filepath, 'w', encoding='utf-8') as f:
-    #json.dump(aDict, f)
-    pass
+for item in container.putCargos:
+    boxDict = {'calculated_size': item.getCalculatedSize(), 'cargo_id': item.groupId,
+                    'id': item.id, 'mass': item.mass, 'position': item.getPosition(),
+                    'size': item.getSize(), 'sort': 0, 'stacking': True, 'turnover': True, 'type': 'box'}
+    logging.info(boxDict)
+    array.append(boxDict)
+
+aDict = {'cargos': array}
+
+with open('..\Data\\resjson\\' + filepath, 'w', encoding='utf-8') as f:
+    json.dump(aDict, f)
+    logging.info('Succesfuly encoded data to ' + filepath)
+
