@@ -3,6 +3,7 @@ import numpy as np
 import fragmentation
 import logging
 from box import Box
+from container import Container
 
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
@@ -15,6 +16,11 @@ with open(filename, encoding="utf8") as file:
 jsonString = '{"a":54, "b": 28}'
 
 aDict = json.loads(base)
+
+container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size'][0], aDict['cargo_space']['size'][1],
+                      aDict['cargo_space']['size'][2],  aDict['cargo_space']['carrying_capacity'])
+logging.info(f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
+
 
 boxes = []
 
