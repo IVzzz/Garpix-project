@@ -25,7 +25,8 @@ logging.info(f'Container: id {container.id}, w:{container.width}, h:{container.h
 boxes = []
 
 for item in aDict["cargo_groups"]:
-    boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'], item['mass']))
+    if item['mass'] <= container.maxWeight:
+        boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'], item['mass']))
 # Extracting data from json[END]
 
 # Sorting data by non-growth (quicksort)
@@ -57,3 +58,11 @@ for item in boxes:
 container.putCargos.append(boxes[0])
 boxes[0].setPosition(boxes[0].length/2, boxes[0].width/2, boxes[0].height/2)
 container.currentWeight += boxes[0].mass
+
+# Putting cargos from zero pos along X asis (length) from the biggest to the smallest while we can
+for index in range(1, len(boxes)):
+    if container.maxWeight >= (container.currentWeight + boxes[index].mass):
+        container.putCargos.append(boxes[index])
+        boxes[index].setPosition(boxes[index - 1].length + boxes[index].length, boxes[index].width, boxes[index].height)
+        container.currentWeight += boxes[index].mass
+        logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
