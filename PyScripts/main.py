@@ -18,7 +18,7 @@ jsonString = '{"a":54, "b": 28}'
 aDict = json.loads(base)
 
 container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size'][0], aDict['cargo_space']['size'][1],
-                      aDict['cargo_space']['size'][2],  aDict['cargo_space']['carrying_capacity'])
+                      aDict['cargo_space']['size'][2],  aDict['cargo_space']['carrying_capacity'], 0)
 logging.info(f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
 
 
@@ -53,3 +53,14 @@ for item in boxes:
     logging.info(item.getBoxData())
 
 # Loading container in x digit(by length)
+# Array contains the positions of loaded boxes
+container.putCargos.append(boxes[0])
+boxes[0].setPosition(boxes[0].length/2, boxes[0].width/2, boxes[0].height/2)
+container.currentWeight += boxes[0].mass
+
+# Putting cargos from zero pos along X asis (length) from the biggest to the smallest while we can
+for index in range(1, len(boxes)):
+    container.putCargos.append(boxes[index])
+    boxes[index].setPosition(boxes[index - 1].length + boxes[index].length, boxes[index].width, boxes[index].height)
+    container.currentWeight += boxes[index].mass
+    logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
