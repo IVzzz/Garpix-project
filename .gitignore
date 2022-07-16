@@ -1,5 +1,4 @@
 .idea
-Data/_vg_85_bgg5jsons/
-Data/res/0/
+Data/**/*.json
 .pyc
 
