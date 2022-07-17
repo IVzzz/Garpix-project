@@ -1,0 +1,4 @@
+.idea
+Data/**/*.json
+.pyc
+
