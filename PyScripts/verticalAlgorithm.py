@@ -26,12 +26,12 @@ def GetBoxesMass(boxes: list):
     return totalMass
 
 
-def VerticalAlgorithm(commonParam: int, boxes: list):
-    maxWeight = int(container.maxWeight * (commonParam / container.width) / (0.75))
-    trialContainer = Container(0, commonParam, container.height, container.length, maxWeight)
+def verticalAlgorithm(commonParam: int, boxes: list):
+    maxWeight = int(Container.maxWeight * (commonParam / Container.width) / (0.75))
+    trialContainer = Container(0, commonParam, Container.height, Container.length, maxWeight)
     volume = trialContainer.width * trialContainer.height * trialContainer.length
-    volumeBoxes = 0  # volume of boxes which were placed in trial container
-    containerVolume = commonParam * trialContainer.height * trialContainer.length
+    volumeBoxes = 0  # volume of boxes which were placed in trial Container
+    ContainerVolume = commonParam * trialContainer.height * trialContainer.length
     boxLineLength = 0
     towersList = []  # list of positions for new box placing
 
@@ -43,7 +43,7 @@ def VerticalAlgorithm(commonParam: int, boxes: list):
     towersList.append([position, 0])
     for box in boxes:
         boxVolume = box.width * box.height * box.length
-        if totalMass > maxWeight and box.mass / boxVolume > maxWeight / containerVolume:
+        if totalMass > maxWeight and box.mass / boxVolume > maxWeight / ContainerVolume:
             continue
         wasAdded = True
         while amountList[str(box.groupId)] > 0 and wasAdded:

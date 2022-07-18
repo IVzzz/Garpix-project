@@ -4,6 +4,7 @@ import fragmentation
 import logging
 from box import Box
 from container import Container
+from verticalAlgorithm import verticalAlgorithm
 
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
@@ -29,9 +30,8 @@ for item in aDict["cargo_groups"]:
         boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'],
                          item['mass']))
 aDict.clear()
-
-
 # Decoding data from json[END]
+
 
 # Sorting data by non-growth (quicksort)
 def qsort(array):
@@ -58,21 +58,13 @@ for item in boxes:
     logging.info(item.getBoxData())
 
 # Loading container in x digit(by length)
-# Array contains the positions of loaded boxes
-# This loading just to be sure JSON encoding is working correct [START]
-container.putCargos.append(boxes[0])
-boxes[0].setPosition(boxes[0].length / 2, boxes[0].width / 2, boxes[0].height / 2)
-container.currentWeight += boxes[0].mass
+container = verticalAlgorithm(0, boxes)[1]
 
-# Putting cargos from zero pos along X asis (length) from the biggest to the smallest while we can
-for index in range(1, len(boxes)):
-    if container.maxWeight >= (container.currentWeight + boxes[index].mass):
-        container.putCargos.append(boxes[index])
-        boxes[index].setPosition(boxes[index - 1].length + boxes[index].length, boxes[index].width, boxes[index].height)
-        container.currentWeight += boxes[index].mass
-        logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
-# This loading just to be sure JSON encoding is working correct [END]
 
+# json encoding[START]
+aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': [0, 0, 0], 'type': 'pallet'}}
+
+# Array contains items of values for keys('cargo_space', 'cargos', 'unpacked')
 array = []
 
 for item in container.putCargos:
@@ -87,4 +79,5 @@ aDict = {'cargos': array}
 with open('..\Data\\resjson\\' + filepath, 'w', encoding='utf-8') as f:
     json.dump(aDict, f)
     logging.info('Succesfuly encoded data to ' + filepath)
+# json encoding[END]
 

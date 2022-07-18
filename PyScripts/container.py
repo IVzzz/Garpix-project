@@ -11,6 +11,10 @@ class Container:
         self.currentWeight = currentWeight
         self.putCargos = []
 
+    # Returns container size: Map
+    def getSize(self):
+        return {'height': self.height, 'length': self.length, 'width': self.width}
+
     def addBox(self, box: Box, position):
         if self.maxWeight < box.mass:
             return False
