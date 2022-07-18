@@ -1,26 +1,38 @@
+from box import Box
+
+
 def fragmentationBoxes(boxes):
-
     classes = {}
-
-    for i in range(1, len(boxes)):
+    for i in range(0, len(boxes)):
+        if boxes[i].boxCount == 0:
+            continue
         for t in range(3):
-            keyClass = boxes[i][2][t]
-            idBox = boxes[i][0]
+            if (t == 0):
+                keyClass = boxes[i].width
+            elif (t == 1):
+                keyClass = boxes[i].height
+            else:
+                keyClass = boxes[i].length
+
+            idBox = boxes[i].id
             idFlag = False
             for s in classes.keys():
                 if (keyClass == s):
                     buffer_ = classes[s]
-                    for k in range (len(buffer_)):
-                        if (buffer_[k][2] == idBox):
+                    for k in range(len(buffer_)):
+                        if (buffer_[k].id == idBox):
                             idFlag = True
-            if (t == 0 and idFlag == False):
-                buffer = (boxes[i][2][t + 1], boxes[i][2][t + 2], boxes[i][0], boxes[i][3])
-                classes.setdefault(keyClass, []).append(buffer)
-            elif (t == 1 and idFlag == False):
-                buffer = (boxes[i][2][t - 1], boxes[i][2][t + 1], boxes[i][0], boxes[i][3])
-                classes.setdefault(keyClass, []).append(buffer)
-            elif (idFlag == False):
-                buffer = (boxes[i][2][t - 2], boxes[i][2][t - 1], boxes[i][0], boxes[i][3])
-                classes.setdefault(keyClass, []).append(buffer)
-    sortedClasses = dict(sorted(classes.items()))
-    return sortedClasses
+            if (idFlag == False):
+                newbox = boxes[i].copy()
+                if t == 1:
+                    newbox.rotate("x")
+                elif t == 2:
+                    newbox.rotate("z")
+
+                if not keyClass in classes.keys():
+                    classes[keyClass] = [newbox]
+                else:
+                    buffer = classes[keyClass]
+                    buffer.append(newbox)
+                    classes[keyClass] = buffer.copy()
+    return classes

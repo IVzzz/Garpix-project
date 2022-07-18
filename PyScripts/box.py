@@ -15,14 +15,14 @@ class Box:
         self.boxCount = boxCount
         self.mass = mass
         # Position is the center of parallelepiped
-        self.__position = []
+        self.__position = {}
         self.__constWidth = width
         self.__constLength = length
         self.__constHeight = height
         logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
-    def setPosition(self, x, y, z):
-        self.__position = {'x': x, 'y': y, 'z': z}
+    def setPosition(self, position):
+        self.__position = position  # position = {"width" : .., "height" : .., "length" : ..}
 
     def getPosition(self):
         return self.__position.copy()
@@ -90,3 +90,6 @@ class Box:
     def getBoxData(self):
         #return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
         return f' size: w-{self.width} l-{self.length} h-{self.height}'
+
+    def copy(self):
+        return Box(self.id, self.groupId, self.width, self.height, self.length, self.boxCount, self.mass)

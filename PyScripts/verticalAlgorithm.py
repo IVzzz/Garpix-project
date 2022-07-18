@@ -1,39 +1,34 @@
 from box import Box
 from container import Container
 
-
 # get sum of all boxes volume from list
-def CountAllVolume(boxes: list):
+def CountAllVolume(boxes : list):
     totalVolume = 0
     for box in boxes:
         totalVolume += (box.width * box.height * box.length) * box.boxCount
     return totalVolume
 
-
 # get dictionary of box amount in every group
-def GetBoxAmountList(boxes: list):
+def GetBoxAmountList(boxes : list):
     amountList = {}
     for box in boxes:
         amountList[str(box.groupId)] = box.boxCount
     return amountList
 
-
 # get mass of all boxes
-def GetBoxesMass(boxes: list):
+def GetBoxesMass(boxes : list):
     totalMass = 0
     for box in boxes:
-        totalMass += boxes.mass
+        totalMass += box.mass
     return totalMass
 
-
-def verticalAlgorithm(commonParam: int, boxes: list):
-    maxWeight = int(Container.maxWeight * (commonParam / Container.width) / (0.75))
-    trialContainer = Container(0, commonParam, Container.height, Container.length, maxWeight)
+def VerticalAlgorithm(commonParam : int, boxes : list, container, coff):
+    maxWeight = int((container.maxWeight - container.currentWeight) * coff)
+    trialContainer = Container(0, commonParam, container.height, container.length, maxWeight)
     volume = trialContainer.width * trialContainer.height * trialContainer.length
-    volumeBoxes = 0  # volume of boxes which were placed in trial Container
-    ContainerVolume = commonParam * trialContainer.height * trialContainer.length
+    volumeBoxes = 0 # volume of boxes which were placed in trial container
     boxLineLength = 0
-    towersList = []  # list of positions for new box placing
+    towersList = [] # list of positions for new box placing
 
     totalVolume = CountAllVolume(boxes)
     amountList = GetBoxAmountList(boxes)
@@ -43,14 +38,14 @@ def verticalAlgorithm(commonParam: int, boxes: list):
     towersList.append([position, 0])
     for box in boxes:
         boxVolume = box.width * box.height * box.length
-        if totalMass > maxWeight and box.mass / boxVolume > maxWeight / ContainerVolume:
-            continue
+        '''if totalMass > maxWeight and box.mass / boxVolume > maxWeight / containerVolume:
+            continue'''
         wasAdded = True
         while amountList[str(box.groupId)] > 0 and wasAdded:
             wasAdded = False
             countPositions = len(towersList)
             for i in range(countPositions):
-                nextPos = towersList[i][0]
+                nextPos = towersList[i][0].copy()
                 nextPos["height"] = box.height / 2 + towersList[i][0]["height"]
                 nextPos["length"] = box.length / 2 + towersList[i][0]["length"]
                 nextPos["width"] = box.width / 2
@@ -77,7 +72,33 @@ def verticalAlgorithm(commonParam: int, boxes: list):
                     if trialContainer.addBox(box, nextPos):
                         wasAdded = True
                         amountList[str(box.groupId)] -= 1
-                        volumeBoxes += box.width * box.height * box.length
+                        volumeBoxes += boxVolume
                         towersList.append([position, box.length + towersList[i][1]])
+    return [volumeBoxes/volume, trialContainer]
 
-    return [volumeBoxes / volume, trialContainer]
+
+def ChooseOptimalLayer(boxGroups : dict, container, boxClasses):
+    layers = {}
+    maxEff = 0
+    maxLayer = 0
+    for commonParam in boxGroups.keys():
+        res = VerticalAlgorithm(commonParam, boxGroups[commonParam], container, 0.75)
+        if maxEff <= res[0] and res[1].currentWeight <= container.maxWeight - container.currentWeight and res[1].width <= container.width - container.currentWidth:
+            if maxEff == res[0] and maxLayer > commonParam:
+                maxLayer = commonParam
+            else:
+                maxEff = res[0]
+                maxLayer = commonParam
+        layers[commonParam] = res[1]
+    if maxLayer != 0:
+        for box in layers[maxLayer].putCargos:
+            pos = box.getPosition().copy()
+            a = container.addBox(box, pos)
+            for item in boxClasses[maxLayer]:
+                if item.groupId == box.groupId:
+                    box.boxCount -= 1
+        container.currentWidth += layers[maxLayer].width
+        return True
+    else:
+        return False
+
