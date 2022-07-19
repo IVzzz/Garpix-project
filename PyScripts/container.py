@@ -13,10 +13,10 @@ class Container:
         self.currentWidth = 0
 
     def getSize(self):
-        return {'height': self.height/1000, 'length': self.length/1000, 'width': self.width/1000}
+        return {'height': self.height / 1000, 'length': self.length / 1000, 'width': self.width / 1000}
 
     def getPosition(self):
-        return [self.length/2000, self.height/2000, self.width/2000]
+        return [self.length / 2000, self.height / 2000, self.width / 2000]
 
     def addBox(self, box: Box, addedPosition):
         if self.maxWeight - self.currentWeight < box.mass:
@@ -34,9 +34,12 @@ class Container:
                     else:
                         for checkedBox in self.putCargos:
                             checkedPosition = checkedBox.getPosition()
-                            if abs(checkedPosition["width"] - position["width"]) >= checkedBox.width / 2 + box.width / 2 or abs(
-                                checkedPosition["length"] - position["length"]) >= checkedBox.length / 2 + box.length / 2 or abs(
-                                checkedPosition["height"] - position["height"]) >= checkedBox.height / 2 + box.height / 2:
+                            if abs(checkedPosition["width"] - position[
+                                "width"]) >= checkedBox.width / 2 + box.width / 2 or abs(
+                                    checkedPosition["length"] - position[
+                                        "length"]) >= checkedBox.length / 2 + box.length / 2 or abs(
+                                checkedPosition["height"] - position[
+                                    "height"]) >= checkedBox.height / 2 + box.height / 2:
                                 self.currentWeight += box.mass
                                 box.setPosition(position)
                                 self.putCargos.append(box)

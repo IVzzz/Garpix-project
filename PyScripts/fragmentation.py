@@ -1,5 +1,4 @@
 def fragmentationBoxes(boxes):
-
     classes = {}
 
     for i in range(1, len(boxes)):
@@ -10,7 +9,7 @@ def fragmentationBoxes(boxes):
             for s in classes.keys():
                 if (keyClass == s):
                     buffer_ = classes[s]
-                    for k in range (len(buffer_)):
+                    for k in range(len(buffer_)):
                         if (buffer_[k][2] == idBox):
                             idFlag = True
             if (t == 0 and idFlag == False):

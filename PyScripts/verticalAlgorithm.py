@@ -1,35 +1,37 @@
-from box import Box
 from container import Container
-import logging
+
 
 # get sum of all boxes volume from list
-def CountAllVolume(boxes : list):
+def CountAllVolume(boxes: list):
     totalVolume = 0
     for box in boxes:
         totalVolume += (box.width * box.height * box.length) * box.boxCount
     return totalVolume
 
+
 # get dictionary of box amount in every group
-def GetBoxAmountList(boxes : list):
+def GetBoxAmountList(boxes: list):
     amountList = {}
     for box in boxes:
         amountList[str(box.groupId)] = box.boxCount
     return amountList
 
+
 # get mass of all boxes
-def GetBoxesMass(boxes : list):
+def GetBoxesMass(boxes: list):
     totalMass = 0
     for box in boxes:
         totalMass += box.mass
     return totalMass
 
-def VerticalAlgorithm(commonParam : int, boxes : list, container, coff):
+
+def VerticalAlgorithm(commonParam: int, boxes: list, container, coff):
     maxWeight = int((container.maxWeight - container.currentWeight) * coff)
     trialContainer = Container(0, commonParam, container.height, container.length, maxWeight)
     volume = trialContainer.width * trialContainer.height * trialContainer.length
-    volumeBoxes = 0 # volume of boxes which were placed in trial container
+    volumeBoxes = 0  # volume of boxes which were placed in trial container
     boxLineLength = 0
-    towersList = [] # list of positions for new box placing
+    towersList = []  # list of positions for new box placing
 
     totalVolume = CountAllVolume(boxes)
     amountList = GetBoxAmountList(boxes)
@@ -118,7 +120,7 @@ def VerticalAlgorithm(commonParam : int, boxes : list, container, coff):
                         amountList[str(box.groupId)] -= 1
                         volumeBoxes += boxVolume
                         towersList.append([position, box.length + towersList[i][1], box.width])
-    return [volumeBoxes/volume, trialContainer]
+    return [volumeBoxes / volume, trialContainer]
 
 
 def ChooseOptimalLayer(boxClasses, container):
@@ -127,7 +129,8 @@ def ChooseOptimalLayer(boxClasses, container):
     maxLayer = 0
     for commonParam in boxClasses.keys():
         res = VerticalAlgorithm(commonParam, boxClasses[commonParam], container, 0.75)
-        if maxEff <= res[0] and res[1].currentWeight <= container.maxWeight - container.currentWeight and res[1].width <= container.width - container.currentWidth:
+        if maxEff <= res[0] and res[1].currentWeight <= container.maxWeight - container.currentWeight and res[
+            1].width <= container.width - container.currentWidth:
             if maxEff == res[0] and maxLayer > commonParam:
                 maxLayer = commonParam
             else:
@@ -145,4 +148,3 @@ def ChooseOptimalLayer(boxClasses, container):
         return True
     else:
         return False
-

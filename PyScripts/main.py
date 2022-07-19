@@ -1,5 +1,4 @@
 import json
-import numpy as np
 from getWClasses import fragmentationBoxes
 import logging
 from box import Box
@@ -7,7 +6,7 @@ from container import Container
 from verticalAlgorithm import ChooseOptimalLayer
 
 
-def qsort(array, side : str):
+def qsort(array, side: str):
     if len(array) <= 1:
         return array
     else:
@@ -51,7 +50,8 @@ if __name__ == "__main__":
 
     aDict = json.loads(base)
 
-    container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size']["width"], aDict['cargo_space']['size']["height"],
+    container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size']["width"],
+                          aDict['cargo_space']['size']["height"],
                           aDict['cargo_space']['size']["length"], aDict['cargo_space']['carrying_capacity'])
     container.currentWeight += aDict['cargo_space']['mass']
     logging.info(
@@ -61,7 +61,8 @@ if __name__ == "__main__":
 
     for item in aDict["cargo_groups"]:
         if item['mass'] <= container.maxWeight:
-            boxes.append(Box(item['group_id'], item['group_id'], item['size']["width"], item['size']["height"], item['size']["length"], item['count'],
+            boxes.append(Box(item['group_id'], item['group_id'], item['size']["width"], item['size']["height"],
+                             item['size']["length"], item['count'],
                              item['mass']))
     aDict.clear()
     # Decoding data from json[END]
@@ -71,7 +72,8 @@ if __name__ == "__main__":
     container.currentWeight *= 1000
     containerVolume = container.length * container.width * container.height
 
-    brotherContainer = Container(container.id + 1, container.length, container.height, container.width, container.maxWeight)
+    brotherContainer = Container(container.id + 1, container.length, container.height, container.width,
+                                 container.maxWeight)
     brotherContainer.currentWeight = container.currentWeight
 
     # Sorting data by non-grown area (quicksort) [START]
@@ -109,7 +111,7 @@ if __name__ == "__main__":
 
     allBoxesVolume = 0
     for box in boxes:
-        allBoxesVolume += box.length*box.width*box.height
+        allBoxesVolume += box.length * box.width * box.height
 
     totalVolume1 = 0
     totalVolume2 = 0
@@ -118,9 +120,10 @@ if __name__ == "__main__":
     for item in brotherContainer.putCargos:
         totalVolume2 += item.length * item.height * item.width
 
-    print(totalVolume1/min(allBoxesVolume, containerVolume), totalVolume2/min(allBoxesVolume, containerVolume))
+    print(totalVolume1 / min(allBoxesVolume, containerVolume), totalVolume2 / min(allBoxesVolume, containerVolume))
 
-    logging.info(f'Current_weight: {container.currentWeight} | container_weight{container.maxWeight} | occupied_weight:{container.currentWeight * 100 / container.maxWeight}%  put_cargos: + {container.putCargos}')
+    logging.info(
+        f'Current_weight: {container.currentWeight} | container_weight{container.maxWeight} | occupied_weight:{container.currentWeight * 100 / container.maxWeight}%  put_cargos: + {container.putCargos}')
 
     # json encoding[START]
     aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': container.getPosition(), 'type': 'pallet'}}
@@ -138,7 +141,7 @@ if __name__ == "__main__":
 
     aDict.update({'cargos': array})
 
-    #aDict.update({'unpacked': ''})
+    # aDict.update({'unpacked': ''})
 
     with open('../output/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
