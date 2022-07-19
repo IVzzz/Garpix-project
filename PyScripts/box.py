@@ -18,7 +18,6 @@ class Box:
         self.__constWidth = width
         self.__constLength = length
         self.__constHeight = height
-        logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
     def setPosition(self, position):
         self.__position = position  # position = {"width" : .., "height" : .., "length" : ..}
@@ -33,6 +32,17 @@ class Box:
 
     def getSize(self):
         return {'height': self.__constHeight/1000, 'length': self.__constLength/1000,  'width': self.__constWidth/1000}
+
+    def getCalculatedSizeReverse(self):
+        return {'height': self.height/1000, 'width': self.length/1000, 'length': self.width/1000}
+
+    def getPositionInMetersReverse(self):
+        position = self.__position.copy()
+
+        return {'x': position['width']/1000, 'y': position['height']/1000, 'z': position['length']/1000}
+
+    def getSizeReverse(self):
+        return {'height': self.__constHeight/1000, 'width': self.__constLength/1000,  'length': self.__constWidth/1000}
 
     def getCalculatedSize(self):
         return {'height': self.height/1000, 'length': self.length/1000, 'width': self.width/1000}
