@@ -1,10 +1,10 @@
 import json
-import numpy as np
 from getWClasses import fragmentationBoxes
 import logging
 from box import Box
 from container import Container
 from verticalAlgorithm import ChooseOptimalLayer
+import argparse
 
 
 def qsort(array, side : str):
@@ -42,10 +42,27 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
     # Decoding data from json[START]
-    filepath = "qqq.json"
+    parser = argparse.ArgumentParser(
+        prog="Автозагрузчик",
+        description="Заполняет ограниченное трехмерное пространство трехмерными объектами.",
+        epilog="(с) SPQR Team"
+    )
 
-    with open(filepath, encoding="utf8") as file:
-        base = file.read()
+    parser.add_argument("-p", "--path", default="No path", help="Сюда нужно вводить имя JSON")
+
+    args = parser.parse_args()
+
+    if args.path == "No path":
+        print("Enter the path to the file.")
+
+    filepath = args.path
+    base = 0
+
+    try:
+        with open('/var/tmp/hackathon/data1/' + filepath, "r", encoding="utf8") as file:
+            base = file.read()
+    except:
+        print("The filepath is not correct.")
 
     jsonString = '{"a":54, "b": 28}'
 
@@ -118,9 +135,9 @@ if __name__ == "__main__":
     aDict.update({'cargos': array})
 
     #aDict.update({'unpacked': ''})
-    filepath = "re11.json"
+    filepath = "res.json"
 
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open('/home/group7/output/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
         logging.info('Succesfuly encoded data to ' + filepath)
     # json encoding[END]
