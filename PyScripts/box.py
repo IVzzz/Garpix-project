@@ -18,7 +18,6 @@ class Box:
         self.__constWidth = width
         self.__constLength = length
         self.__constHeight = height
-        logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
     def setPosition(self, position):
         self.__position = position  # position = {"width" : .., "height" : .., "length" : ..}
