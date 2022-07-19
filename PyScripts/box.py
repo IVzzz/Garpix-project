@@ -26,16 +26,21 @@ class Box:
     def getPosition(self):
         return self.__position.copy()
 
+    def getPositionInMeters(self):
+        position = self.__position.copy()
+
+        return {'x': position['length']/1000, 'y': position['height']/1000, 'z': position['width']/1000}
+
     def getPositionReverse(self):
         pos = self.__position.copy()
         pos["width"], pos["length"] =  pos["length"], pos["width"]
         return pos
 
     def getSize(self):
-        return {'height': self.__constHeight, 'length': self.__constLength,  'width': self.__constWidth}
+        return {'height': self.__constHeight/1000, 'length': self.__constLength/1000,  'width': self.__constWidth/1000}
 
     def getCalculatedSize(self):
-        return {'height': self.height, 'length': self.length, 'width': self.width}
+        return {'height': self.height/1000, 'length': self.length/1000, 'width': self.width/1000}
 
     def getSizeReverse(self):
         return {'height': self.__constHeight, 'length': self.__constWidth,  'width': self.__constLength}

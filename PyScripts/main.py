@@ -125,15 +125,18 @@ if __name__ == "__main__":
 
     # Array contains items of values for keys('cargo_space', 'cargos', 'unpacked')
     array = []
-
+    idCounter = 0
     for item in container.putCargos:
         boxDict = {'calculated_size': item.getCalculatedSize(), 'cargo_id': item.groupId,
-                   'id': int(item.id), 'mass': item.mass, 'position': item.getPosition(),
-                   'size': item.getSize(), 'sort': 0, 'stacking': True, 'turnover': True, 'type': 'box'}
+                   'id': idCounter, 'mass': item.mass, 'position': item.getPositionInMeters(),
+                   'size': item.getSize(), 'sort': 1, 'stacking': True, 'turnover': True, 'type': 'box'}
         logging.info(boxDict)
         array.append(boxDict)
+        idCounter += 1
 
     aDict.update({'cargos': array})
+
+    #aDict.update({'unpacked': ''})
 
     with open('../home/group7/SPQR/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
