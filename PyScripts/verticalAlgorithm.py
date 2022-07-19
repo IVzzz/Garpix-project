@@ -30,13 +30,12 @@ def VerticalAlgorithm(commonParam : int, boxes : list, container, coff):
     boxLineLength = 0
     towersList = [] # list of positions for new box placing
 
-    totalVolume = CountAllVolume(boxes)
     amountList = GetBoxAmountList(boxes)
-    totalMass = GetBoxesMass(boxes)
 
     position = {"width": 0, "height": 0, "length": 0}
     towersList.append([position, container.length, commonParam])
     for box in boxes:
+        #if box.groupId
         boxVolume = box.width * box.height * box.length
         wasAdded = True
         while amountList[str(box.groupId)] > 0 and wasAdded:
@@ -48,70 +47,46 @@ def VerticalAlgorithm(commonParam : int, boxes : list, container, coff):
                 nextPos["length"] = box.length / 2 + towersList[i][0]["length"]
                 nextPos["width"] = box.width / 2 + towersList[i][0]["width"]
                 rotate = "n"
-                if trialContainer.addBox(box, nextPos):
-                    rotate = "c"
-                else:
-                    box.rotate("z")
+                if box.groupId == "601592N8": print(box.length, towersList[i][1], box.width, towersList[i][2],
+                                                    towersList[i])
+                if box.length <= towersList[i][1] and box.width <= towersList[i][2]:
                     if trialContainer.addBox(box, nextPos):
-                        rotate = "z"
-                    else:
-                        box.rotate("y")
-                        if trialContainer.addBox(box, nextPos):
-                            rotate = "y"
-                        else:
-                            box.rotate("x")
-                            if trialContainer.addBox(box, nextPos):
-                                rotate = "x"
+                        rotate = "c"
 
                 if rotate != "n":
                     amountList[str(box.groupId)] -= 1
                     volumeBoxes += boxVolume
-                    pos = i
 
                     if box.width < towersList[i][2]:
-                        newPos = towersList[i].copy()
+                        newPos = [position.copy(), 0, 0]
                         newPos[0]["width"] += box.width
+                        newPos[0]["length"] = towersList[i][0].get("length")
+                        newPos[0]["height"] = towersList[i][0].get("height")
                         newPos[2] = towersList[i][2] - box.width
-                        pos += 1
-                        towersList.insert(pos, newPos)
+                        newPos[1] = box.length
+                        towersList.append(newPos)
 
-                    if towersList[i][0]["height"] != 0 and box.length < towersList[i][1]:
-                        newPos = towersList[i].copy()
-                        newPos[0]["length"] += box.length
+                    if box.length < towersList[i][1]:
+                        newPos = [position.copy(), 0, 0]
+                        newPos[0]["length"] = box.length + towersList[i][0].get("length")
+                        newPos[0]["height"] = towersList[i][0].get("height")
+                        newPos[0]["width"] = towersList[i][0].get("width")
                         newPos[1] = towersList[i][1] - box.length
-                        pos += 1
-                        towersList.insert(pos, newPos)
+                        newPos[2] = towersList[i][2]
+                        towersList.append(newPos)
 
-                    if towersList[i][0]["height"] != 0 and box.width < towersList[i][2] and box.length < towersList[i][1]:
-                        newPos = towersList[i].copy()
-                        newPos[0]["length"] += box.length
-                        newPos[0]["width"] += box.width
-                        newPos[2] = towersList[i][2] - box.width
-                        newPos[1] = towersList[i][1] - box.length
-                        pos += 1
-                        towersList.insert(pos, newPos)
-
-                    towersList[i][0]["height"] += box.height
-                    towersList[i][1] = box.length
-                    towersList[i][2] = box.width
-                    boxLineLength += box.length
+                    if towersList[i][0]["height"] + box.height < trialContainer.height:
+                        towersList[i][0]["height"] += box.height
+                        towersList[i][1] = box.length
+                        towersList[i][2] = box.width
+                    else:
+                        towersList.pop(i)
                     wasAdded = True
                     if rotate != "c":
                         box.rotate(rotate)
                     break
-                elif i + 1 == len(towersList) and boxLineLength + box.length < trialContainer.length:
-                    nextPos = towersList[i][0].copy()
-                    position["height"] = 0
-                    position["length"] = boxLineLength
-                    position["width"] = 0
-                    nextPos["width"] = box.width / 2
-                    nextPos["height"] = box.height / 2
-                    nextPos["length"] = box.length / 2 + boxLineLength
-                    if trialContainer.addBox(box, nextPos):
-                        wasAdded = True
-                        amountList[str(box.groupId)] -= 1
-                        volumeBoxes += boxVolume
-                        towersList.append([position, box.length + towersList[i][1], box.width])
+
+
     return [volumeBoxes/volume, trialContainer]
 
 

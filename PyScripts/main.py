@@ -42,9 +42,9 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
     # Decoding data from json[START]
-    filepath = input("Введите имя тестового файла")
+    filepath = "qqq.json"
 
-    with open('../var/tmp/hackathon/data1/' + filepath, encoding="utf8") as file:
+    with open(filepath, encoding="utf8") as file:
         base = file.read()
 
     jsonString = '{"a":54, "b": 28}'
@@ -106,9 +106,9 @@ if __name__ == "__main__":
     array = []
     idCounter = 0
     for item in container.putCargos:
-        boxDict = {'calculated_size': item.getCalculatedSize(), 'cargo_id': item.groupId,
+        boxDict = {'calculated_size': item.getSize(), 'cargo_id': item.groupId,
                    'id': idCounter, 'mass': item.mass, 'position': item.getPositionInMeters(),
-                   'size': item.getSize(), 'sort': 1, 'stacking': True, 'turnover': True, 'type': 'box'}
+                   'size': item.getCalculatedSize(), 'sort': 1, 'stacking': True, 'turnover': True, 'type': 'box'}
         logging.info(boxDict)
         array.append(boxDict)
         idCounter += 1
@@ -116,9 +116,9 @@ if __name__ == "__main__":
     aDict.update({'cargos': array})
 
     #aDict.update({'unpacked': ''})
-    filepath = "res.json"
+    filepath = "re11.json"
 
-    with open('../home/group7/SPQR/' + filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
         logging.info('Succesfuly encoded data to ' + filepath)
     # json encoding[END]
