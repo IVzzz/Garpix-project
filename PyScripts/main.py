@@ -129,7 +129,7 @@ if __name__ == "__main__":
     # Sorting data by non-growth (quicksort)[END]
     boxClassesRes2 = fragmentationBoxes(boxes1)
     for width in boxClassesRes2.keys():
-        boxClassesRes1[width] = qsort(boxClassesRes1[width], "s")
+        boxClassesRes2[width] = qsort(boxClassesRes2[width], "s")
 
     canAddBoxes = True
     while canAddBoxes:
