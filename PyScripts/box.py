@@ -29,7 +29,7 @@ class Box:
     def getPositionInMeters(self):
         position = self.__position.copy()
 
-        return {'x': position['length']/2000, 'y': position['height']/1000, 'z': position['width']/1000}
+        return {'x': position['length']/1000, 'y': position['height']/1000, 'z': position['width']/1000}
 
     def getSize(self):
         return {'height': self.__constHeight/1000, 'length': self.__constLength/1000,  'width': self.__constWidth/1000}
