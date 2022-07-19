@@ -1,6 +1,5 @@
 import logging
-import math
-import numpy
+
 
 
 class Box:
@@ -60,46 +59,7 @@ class Box:
             self.length = self.width
             self.width = buffer
 
-    # Function returns numpy array of 4 vertexes of the box
-    def getVertices(self):
-        diagonal = math.sqrt(self.width * self.width + self.length * self.length + self.height * self.height)
-
-        vertices = numpy.array([])
-        vertex = numpy.array([0, 0, 0])
-
-        halfWidth = self.width/2
-        halfLength = self.length/2
-        halfHeight = self.height/2
-
-        # Counting 8 vertices of the box by adding up position +- 1/2 * width/length/height
-        vertex = numpy.array([self.__position[0] + halfLength, self.__position[1] - halfWidth, self.__position[2] - halfHeight])
-        vertices = vertex
-
-        vertex = numpy.array([self.__position[0] - halfLength, self.__position[1] - halfWidth, self.__position[2] - halfHeight])
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] - halfLength, self.__position[1] + halfWidth, self.__position[2] - halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] + halfLength, self.__position[1] + halfWidth, self.__position[2] - halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] + halfLength, self.__position[1] - halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] - halfLength, self.__position[1] - halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] - halfLength, self.__position[1] + halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] + halfLength, self.__position[1] + halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        return vertices
-
     def getBoxData(self):
-        #return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
         return f' size: w-{self.width} l-{self.length} h-{self.height}'
 
     def copy(self):
