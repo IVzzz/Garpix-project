@@ -41,7 +41,7 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
     # Decoding data from json[START]
-    filepath = "118130_cl.json"
+    filepath = "103056_cl.json"
 
     with open('../var/tmp/hackathon/data1/' + filepath, encoding="utf8") as file:
         base = file.read()
@@ -55,7 +55,7 @@ if __name__ == "__main__":
                           aDict['cargo_space']['size']["length"], aDict['cargo_space']['carrying_capacity'])
     container.currentWeight += aDict['cargo_space']['mass']
     logging.info(
-        f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
+        f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight * 1000}')
 
     boxes = []
 
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     for item in brotherContainer.putCargos:
         totalVolume2 += item.length * item.height * item.width
 
-    print(totalVolume1 / min(allBoxesVolume, containerVolume), totalVolume2 / min(allBoxesVolume, containerVolume))
+    print(totalVolume1 / allBoxesVolume, containerVolume, totalVolume2 / containerVolume)
 
     logging.info(
         f'Current_weight: {container.currentWeight} | container_weight{container.maxWeight} | occupied_weight:{container.currentWeight * 100 / container.maxWeight}%  put_cargos: + {container.putCargos}')
@@ -131,11 +131,14 @@ if __name__ == "__main__":
     # Array contains items of values for keys('cargo_space', 'cargos', 'unpacked')
     array = []
     idCounter = 0
+    summaryVolume = 0
     for item in container.putCargos:
         boxDict = {'calculated_size': item.getCalculatedSize(), 'cargo_id': item.groupId,
                    'id': idCounter, 'mass': item.mass, 'position': item.getPositionInMeters(),
                    'size': item.getSize(), 'sort': 1, 'stacking': True, 'turnover': True, 'type': 'box'}
-        logging.info(boxDict)
+        summaryVolume += item.width * item.height * item.length
+        logging.info(f'container_volume: {(container.length * container.width * container.height)/1000000}  |  occupied_volume: {summaryVolume/1000000}' +
+                     f' || {summaryVolume * 100 / (container.length * container.width * container.height)}')
         array.append(boxDict)
         idCounter += 1
 
