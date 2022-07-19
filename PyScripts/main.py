@@ -120,6 +120,8 @@ if __name__ == "__main__":
 
     print(totalVolume1/min(allBoxesVolume, containerVolume), totalVolume2/min(allBoxesVolume, containerVolume))
 
+    logging.info(f'Current_weight: {container.currentWeight} | container_weight{container.maxWeight} | occupied_weight:{container.currentWeight * 100 / container.maxWeight}%  put_cargos: + {container.putCargos}')
+
     # json encoding[START]
     aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': container.getPosition(), 'type': 'pallet'}}
 
@@ -140,5 +142,4 @@ if __name__ == "__main__":
 
     with open('../home/group7/SPQR/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
-        logging.info('Succesfuly encoded data to ' + filepath)
     # json encoding[END]

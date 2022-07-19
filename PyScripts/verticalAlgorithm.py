@@ -1,5 +1,6 @@
 from box import Box
 from container import Container
+import logging
 
 # get sum of all boxes volume from list
 def CountAllVolume(boxes : list):
