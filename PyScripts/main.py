@@ -58,6 +58,8 @@ if __name__ == "__main__":
         f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
 
     boxes = []
+    container.maxWeight *= 1000
+    container.currentWeight *= 1000
 
     for item in aDict["cargo_groups"]:
         if item['mass'] <= container.maxWeight:
@@ -67,8 +69,6 @@ if __name__ == "__main__":
     # Decoding data from json[END]
 
     # from kg to gramms
-    container.maxWeight *= 1000
-    container.currentWeight *= 1000
     containerVolume = container.length * container.width * container.height
 
     # Sorting data by non-grown area (quicksort) [START]
@@ -81,8 +81,10 @@ if __name__ == "__main__":
             box.rotate("y")
     boxes = qsort(boxes, "w")
     # Sorting data by non-growth (quicksort)[END]
-
-
+    su = 0
+    for i in boxes:
+        su += i.boxCount
+    print(su, len(boxes))
     boxClassesRes1 = fragmentationBoxes(boxes)
     for width in boxClassesRes1.keys():
         boxClassesRes1[width] = qsort(boxClassesRes1[width], "s")
