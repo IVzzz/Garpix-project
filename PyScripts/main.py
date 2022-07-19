@@ -44,7 +44,7 @@ if __name__ == "__main__":
     # Decoding data from json[START]
     filepath = "118130_cl.json"
 
-    with open(filepath, encoding="utf8") as file:
+    with open('../var/tmp/hackathon/data1/' + filepath, encoding="utf8") as file:
         base = file.read()
 
     jsonString = '{"a":54, "b": 28}'
@@ -134,9 +134,8 @@ if __name__ == "__main__":
         array.append(boxDict)
 
     aDict = {'cargos': array}
-    filepath = "res.json"
 
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open('../home/group7/SPQR/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
         logging.info('Succesfuly encoded data to ' + filepath)
     # json encoding[END]
