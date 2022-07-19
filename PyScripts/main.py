@@ -121,19 +121,19 @@ if __name__ == "__main__":
     print(totalVolume1/min(allBoxesVolume, containerVolume), totalVolume2/min(allBoxesVolume, containerVolume))
 
     # json encoding[START]
-    aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': [0, 0, 0], 'type': 'pallet'}}
+    aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': container.getPosition(), 'type': 'pallet'}}
 
     # Array contains items of values for keys('cargo_space', 'cargos', 'unpacked')
     array = []
 
     for item in container.putCargos:
         boxDict = {'calculated_size': item.getCalculatedSize(), 'cargo_id': item.groupId,
-                   'id': item.id, 'mass': item.mass, 'position': item.getPosition(),
+                   'id': int(item.id), 'mass': item.mass, 'position': item.getPosition(),
                    'size': item.getSize(), 'sort': 0, 'stacking': True, 'turnover': True, 'type': 'box'}
         logging.info(boxDict)
         array.append(boxDict)
 
-    aDict = {'cargos': array}
+    aDict.update({'cargos': array})
 
     with open('../home/group7/SPQR/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)

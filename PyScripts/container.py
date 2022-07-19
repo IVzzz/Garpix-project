@@ -13,7 +13,10 @@ class Container:
         self.currentWidth = 0
 
     def getSize(self):
-        return {'height': self.height, 'length': self.length, 'width': self.width}
+        return {'height': self.height/1000, 'length': self.length/1000, 'width': self.width/1000}
+
+    def getPosition(self):
+        return [self.length/2000, self.height/2000, self.width/2000]
 
     def addBox(self, box: Box, addedPosition):
         if self.maxWeight - self.currentWeight < box.mass:
