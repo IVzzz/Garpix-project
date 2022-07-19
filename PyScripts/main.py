@@ -140,6 +140,6 @@ if __name__ == "__main__":
 
     #aDict.update({'unpacked': ''})
 
-    with open('../home/group7/SPQR/' + filepath, 'w', encoding='utf-8') as f:
+    with open('../output' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
     # json encoding[END]
