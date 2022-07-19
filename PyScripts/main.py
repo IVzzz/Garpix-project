@@ -42,7 +42,7 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
     # Decoding data from json[START]
-        parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(
         prog="Автозагрузчик",
         description="Заполняет ограниченное трехмерное пространство трехмерными объектами.",
         epilog="(с) SPQR Team"
@@ -181,4 +181,3 @@ if __name__ == "__main__":
     with open('/home/group7/output/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
         logging.info('Succesfuly encoded data to ' + filepath)
-    # json encoding[END]
