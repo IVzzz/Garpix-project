@@ -15,23 +15,34 @@ class Box:
         self.boxCount = boxCount
         self.mass = mass
         # Position is the center of parallelepiped
-        self.__position = []
+        self.__position = {}
         self.__constWidth = width
         self.__constLength = length
         self.__constHeight = height
         logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
-    def setPosition(self, x, y, z):
-        self.__position = {'x': x, 'y': y, 'z': z}
+    def setPosition(self, position):
+        self.__position = position  # position = {"width" : .., "height" : .., "length" : ..}
 
     def getPosition(self):
         return self.__position.copy()
+
+    def getPositionReverse(self):
+        pos = self.__position.copy()
+        pos["width"], pos["length"] =  pos["length"], pos["width"]
+        return pos
 
     def getSize(self):
         return {'height': self.__constHeight, 'length': self.__constLength,  'width': self.__constWidth}
 
     def getCalculatedSize(self):
         return {'height': self.height, 'length': self.length, 'width': self.width}
+
+    def getSizeReverse(self):
+        return {'height': self.__constHeight, 'length': self.__constWidth,  'width': self.__constLength}
+
+    def getCalculatedSizeReverse(self):
+        return {'height': self.height, 'length': self.width, 'width': self.length}
 
     # rotate box clockwise by 90 degrees along the selected AXIS
     def rotate(self, axis: str):
@@ -90,3 +101,6 @@ class Box:
     def getBoxData(self):
         #return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
         return f' size: w-{self.width} l-{self.length} h-{self.height}'
+
+    def copy(self):
+        return Box(self.id, self.groupId, self.width, self.height, self.length, self.boxCount, self.mass)
