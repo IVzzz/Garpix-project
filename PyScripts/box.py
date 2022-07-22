@@ -1,6 +1,5 @@
 import logging
-import math
-import numpy
+
 
 
 class Box:
@@ -15,23 +14,38 @@ class Box:
         self.boxCount = boxCount
         self.mass = mass
         # Position is the center of parallelepiped
-        self.__position = []
+        self.__position = {}
         self.__constWidth = width
         self.__constLength = length
         self.__constHeight = height
-        logging.info(f'New box: groupId:{groupId} w:{width} h:{height} l:{length} bCount:{boxCount} mass:{mass}')
 
-    def setPosition(self, x, y, z):
-        self.__position = {'x': x, 'y': y, 'z': z}
+    def setPosition(self, position):
+        self.__position = position  # position = {"width" : .., "height" : .., "length" : ..}
 
     def getPosition(self):
         return self.__position.copy()
 
+    def getPositionInMeters(self):
+        position = self.__position.copy()
+
+        return {'x': position['length']/1000, 'y': position['height']/1000, 'z': position['width']/1000}
+
     def getSize(self):
-        return {'height': self.__constHeight, 'length': self.__constLength,  'width': self.__constWidth}
+        return {'height': self.__constHeight/1000, 'length': self.__constLength/1000,  'width': self.__constWidth/1000}
+
+    def getCalculatedSizeReverse(self):
+        return {'height': self.height/1000, 'width': self.length/1000, 'length': self.width/1000}
+
+    def getPositionInMetersReverse(self):
+        position = self.__position.copy()
+
+        return {'x': position['width']/1000, 'y': position['height']/1000, 'z': position['length']/1000}
+
+    def getSizeReverse(self):
+        return {'height': self.__constHeight/1000, 'width': self.__constLength/1000,  'length': self.__constWidth/1000}
 
     def getCalculatedSize(self):
-        return {'height': self.height, 'length': self.length, 'width': self.width}
+        return {'height': self.height/1000, 'length': self.length/1000, 'width': self.width/1000}
 
     # rotate box clockwise by 90 degrees along the selected AXIS
     def rotate(self, axis: str):
@@ -49,44 +63,8 @@ class Box:
             self.length = self.width
             self.width = buffer
 
-    # Function returns numpy array of 4 vertexes of the box
-    def getVertices(self):
-        diagonal = math.sqrt(self.width * self.width + self.length * self.length + self.height * self.height)
-
-        vertices = numpy.array([])
-        vertex = numpy.array([0, 0, 0])
-
-        halfWidth = self.width/2
-        halfLength = self.length/2
-        halfHeight = self.height/2
-
-        # Counting 8 vertices of the box by adding up position +- 1/2 * width/length/height
-        vertex = numpy.array([self.__position[0] + halfLength, self.__position[1] - halfWidth, self.__position[2] - halfHeight])
-        vertices = vertex
-
-        vertex = numpy.array([self.__position[0] - halfLength, self.__position[1] - halfWidth, self.__position[2] - halfHeight])
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] - halfLength, self.__position[1] + halfWidth, self.__position[2] - halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] + halfLength, self.__position[1] + halfWidth, self.__position[2] - halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] + halfLength, self.__position[1] - halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] - halfLength, self.__position[1] - halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] - halfLength, self.__position[1] + halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        vertex = [self.__position[0] + halfLength, self.__position[1] + halfWidth, self.__position[2] + halfHeight]
-        vertices = numpy.vstack((vertices, vertex))
-
-        return vertices
-
     def getBoxData(self):
-        #return f'id: {self.id} size: w-{self.width} l-{self.length} h-{self.height} mass: {self.mass} count: {self.boxCount}\n'
         return f' size: w-{self.width} l-{self.length} h-{self.height}'
+
+    def copy(self):
+        return Box(self.id, self.groupId, self.width, self.height, self.length, self.boxCount, self.mass)

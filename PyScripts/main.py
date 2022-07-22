@@ -1,90 +1,171 @@
 import json
-import numpy as np
-import fragmentation
+from getWClasses import fragmentationBoxes
 import logging
 from box import Box
 from container import Container
-
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
-
-# Decoding data from json[START]
-filepath = r"0\30_cl.json"
-
-with open('..\Data\_vg_85_bgg5jsons\\' + filepath, encoding="utf8") as file:
-    base = file.read()
-
-jsonString = '{"a":54, "b": 28}'
-
-aDict = json.loads(base)
-
-container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size'][0], aDict['cargo_space']['size'][1],
-                      aDict['cargo_space']['size'][2], aDict['cargo_space']['carrying_capacity'], 0)
-logging.info(
-    f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
-
-boxes = []
-
-for item in aDict["cargo_groups"]:
-    if item['mass'] <= container.maxWeight:
-        boxes.append(Box(item['id'], item['group_id'], item['size'][0], item['size'][1], item['size'][2], item['count'],
-                         item['mass']))
-aDict.clear()
+from verticalAlgorithm import ChooseOptimalLayer
+import argparse
 
 
-# Decoding data from json[END]
-
-# Sorting data by non-growth (quicksort)
-def qsort(array):
+def qsort(array, side : str):
     if len(array) <= 1:
         return array
     else:
         lowArray = []
         highArray = []
         equalArray = []
+        pivot = 0
 
-        pivot = array[int(len(array) / 2)].length
+        if side == "w":
+            pivot = array[int(len(array) / 2)].width
+        elif side == "s":
+            pivot = array[int(len(array) / 2)].length * array[int(len(array) / 2)].width
         for item in array:
-            if item.length < pivot:
-                lowArray.append(item)
-            elif item.length > pivot:
-                highArray.append(item)
-            else:
-                equalArray.append(item)
-        return qsort(highArray) + equalArray + qsort(lowArray)
+            if side == "s":
+                if item.length * item.width < pivot:
+                    lowArray.append(item)
+                elif item.length * item.width > pivot:
+                    highArray.append(item)
+                else:
+                    equalArray.append(item)
+            elif side == "w":
+                if item.width < pivot:
+                    lowArray.append(item)
+                elif item.width > pivot:
+                    highArray.append(item)
+                else:
+                    equalArray.append(item)
+        return qsort(highArray, side) + equalArray + qsort(lowArray, side)
 
 
-boxes = qsort(boxes)
-for item in boxes:
-    logging.info(item.getBoxData())
+if __name__ == "__main__":
+    logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
-# Loading container in x digit(by length)
-# Array contains the positions of loaded boxes
-# This loading just to be sure JSON encoding is working correct [START]
-container.putCargos.append(boxes[0])
-boxes[0].setPosition(boxes[0].length / 2, boxes[0].width / 2, boxes[0].height / 2)
-container.currentWeight += boxes[0].mass
+    # Decoding data from json[START]
 
-# Putting cargos from zero pos along X asis (length) from the biggest to the smallest while we can
-for index in range(1, len(boxes)):
-    if container.maxWeight >= (container.currentWeight + boxes[index].mass):
-        container.putCargos.append(boxes[index])
-        boxes[index].setPosition(boxes[index - 1].length + boxes[index].length, boxes[index].width, boxes[index].height)
-        container.currentWeight += boxes[index].mass
-        logging.info(f'new BoxPosition:{boxes[index].getPosition()}, current mass:{container.currentWeight}')
-# This loading just to be sure JSON encoding is working correct [END]
 
-array = []
 
-for item in container.putCargos:
-    boxDict = {'calculated_size': item.getCalculatedSize(), 'cargo_id': item.groupId,
-                    'id': item.id, 'mass': item.mass, 'position': item.getPosition(),
-                    'size': item.getSize(), 'sort': 0, 'stacking': True, 'turnover': True, 'type': 'box'}
-    logging.info(boxDict)
-    array.append(boxDict)
+    filepath = "140043_cl.json"
 
-aDict = {'cargos': array}
 
-with open('..\Data\\resjson\\' + filepath, 'w', encoding='utf-8') as f:
-    json.dump(aDict, f)
-    logging.info('Succesfuly encoded data to ' + filepath)
+    with open(filepath, "r", encoding="utf8") as file:
+        base = file.read()
 
+    jsonString = '{"a":54, "b": 28}'
+
+    aDict = json.loads(base)
+
+    container = Container(aDict['cargo_space']['id'], aDict['cargo_space']['size']["width"], aDict['cargo_space']['size']["height"],
+                          aDict['cargo_space']['size']["length"], aDict['cargo_space']['carrying_capacity'])
+    container.currentWeight += aDict['cargo_space']['mass']
+    logging.info(
+        f'Container: id {container.id}, w:{container.width}, h:{container.height}, l{container.length}, cc:{container.maxWeight}')
+
+    boxes = []
+    boxes1 = []
+    container.maxWeight *= 1000
+    container.currentWeight *= 1000
+
+    for item in aDict["cargo_groups"]:
+        if item['mass'] <= container.maxWeight:
+            boxes.append(Box(item['group_id'], item['group_id'], item['size']["width"], item['size']["height"], item['size']["length"], item['count'],
+                             item['mass']))
+    aDict.clear()
+    # Decoding data from json[END]
+
+    # from kg to gramms
+    containerVolume = container.length * container.width * container.height
+    brotherContainer = Container(container.id, container.length, container.height, container.width, container.maxWeight)
+    for i in boxes:
+        boxes1.append(i.copy())
+    # Sorting data by non-grown area (quicksort) [START]
+    for box in boxes:
+        if box.height > box.width and box.height >= box.length:
+            box.rotate("x")
+        elif box.length > box.width and box.length >= box.height:
+            box.rotate("z")
+        if box.height > box.length:
+            box.rotate("y")
+    boxes = qsort(boxes, "w")
+    # Sorting data by non-growth (quicksort)[END]
+    boxClassesRes1 = fragmentationBoxes(boxes)
+    for width in boxClassesRes1.keys():
+        boxClassesRes1[width] = qsort(boxClassesRes1[width], "s")
+
+    canAddBoxes = True
+    while canAddBoxes:
+        canAddBoxes = ChooseOptimalLayer(boxClassesRes1, container)
+
+    totalVolume1 = 0
+    for item in container.putCargos:
+        totalVolume1 += item.length * item.height * item.width
+
+    eff1 = totalVolume1/containerVolume
+
+
+
+    # Sorting data by non-grown area (quicksort) [START]
+    for box in boxes1:
+        if box.height > box.width and box.height >= box.length:
+            box.rotate("x")
+        elif box.length > box.width and box.length >= box.height:
+            box.rotate("z")
+        if box.height > box.length:
+            box.rotate("y")
+    boxes1 = qsort(boxes1, "w")
+    # Sorting data by non-growth (quicksort)[END]
+    boxClassesRes2 = fragmentationBoxes(boxes1)
+    for width in boxClassesRes2.keys():
+        boxClassesRes1[width] = qsort(boxClassesRes1[width], "s")
+
+    canAddBoxes = True
+    while canAddBoxes:
+        canAddBoxes = ChooseOptimalLayer(boxClassesRes2, brotherContainer)
+
+    totalVolume2 = 0
+    for item in brotherContainer.putCargos:
+        totalVolume2 += item.length * item.height * item.width
+
+    eff2 = totalVolume2/containerVolume
+
+
+
+    if eff1 >= eff2:
+        # json encoding[START]
+        aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': container.getPosition(), 'type': 'pallet'}}
+
+        # Array contains items of values for keys('cargo_space', 'cargos', 'unpacked')
+        array = []
+        idCounter = 0
+        for item in container.putCargos:
+            boxDict = {'calculated_size': item.getSize(), 'cargo_id': item.groupId,
+                       'id': idCounter, 'mass': item.mass, 'position': item.getPositionInMeters(),
+                       'size': item.getCalculatedSize(), 'sort': 1, 'stacking': True, 'turnover': True, 'type': 'box'}
+            array.append(boxDict)
+            idCounter += 1
+
+        aDict.update({'cargos': array})
+    else:
+        # json encoding[START]
+        aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': container.getPosition(), 'type': 'pallet'}}
+
+        # Array contains items of values for keys('cargo_space', 'cargos', 'unpacked')
+        array = []
+        idCounter = 0
+        for item in brotherContainer.putCargos:
+            boxDict = {'calculated_size': item.getSizeReverse(), 'cargo_id': item.groupId,
+                       'id': idCounter, 'mass': item.mass, 'position': item.getPositionInMetersReverse(),
+                       'size': item.getCalculatedSizeReverse(), 'sort': 1, 'stacking': True, 'turnover': True, 'type': 'box'}
+            array.append(boxDict)
+            idCounter += 1
+
+        aDict.update({'cargos': array})
+
+
+    #aDict.update({'unpacked': ''})
+    filepath = "res.json"
+
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(aDict, f)
+        logging.info('Succesfuly encoded data to ' + filepath)
+    # json encoding[END]
