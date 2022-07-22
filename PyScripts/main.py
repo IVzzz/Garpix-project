@@ -42,14 +42,27 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
     # Decoding data from json[START]
+    parser = argparse.ArgumentParser(
+        prog="Автозагрузчик",
+        description="Заполняет ограниченное трехмерное пространство трехмерными объектами.",
+        epilog="(с) SPQR Team"
+    )
 
+    parser.add_argument("-p", "--path", default="No path", help="Сюда нужно вводить имя JSON")
 
+    args = parser.parse_args()
 
-    filepath = "140043_cl.json"
+    if args.path == "No path":
+        print("Enter the path to the file.")
 
+    filepath = args.path
+    base = 0
 
-    with open(filepath, "r", encoding="utf8") as file:
-        base = file.read()
+    try:
+        with open('/var/tmp/hackathon/data1/' + filepath, "r", encoding="utf8") as file:
+            base = file.read()
+    except:
+        print("The filepath is not correct.")
 
     jsonString = '{"a":54, "b": 28}'
 
@@ -116,7 +129,7 @@ if __name__ == "__main__":
     # Sorting data by non-growth (quicksort)[END]
     boxClassesRes2 = fragmentationBoxes(boxes1)
     for width in boxClassesRes2.keys():
-        boxClassesRes1[width] = qsort(boxClassesRes1[width], "s")
+        boxClassesRes2[width] = qsort(boxClassesRes2[width], "s")
 
     canAddBoxes = True
     while canAddBoxes:
@@ -165,7 +178,6 @@ if __name__ == "__main__":
     #aDict.update({'unpacked': ''})
     filepath = "res.json"
 
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open('/home/group7/output/' + filepath, 'w', encoding='utf-8') as f:
         json.dump(aDict, f)
         logging.info('Succesfuly encoded data to ' + filepath)
-    # json encoding[END]
