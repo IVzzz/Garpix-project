@@ -1,7 +1,6 @@
 import logging
 
 
-
 class Box:
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%I:%M:%S', level=logging.DEBUG)
 
@@ -28,24 +27,26 @@ class Box:
     def getPositionInMeters(self):
         position = self.__position.copy()
 
-        return {'x': position['length']/1000, 'y': position['height']/1000, 'z': position['width']/1000}
+        return {'x': position['length'] / 1000, 'y': position['height'] / 1000, 'z': position['width'] / 1000}
 
     def getSize(self):
-        return {'height': self.__constHeight/1000, 'length': self.__constLength/1000,  'width': self.__constWidth/1000}
+        return {'height': self.__constHeight / 1000, 'length': self.__constLength / 1000,
+                'width': self.__constWidth / 1000}
 
     def getCalculatedSizeReverse(self):
-        return {'height': self.height/1000, 'width': self.length/1000, 'length': self.width/1000}
+        return {'height': self.height / 1000, 'width': self.length / 1000, 'length': self.width / 1000}
 
     def getPositionInMetersReverse(self):
         position = self.__position.copy()
 
-        return {'x': position['width']/1000, 'y': position['height']/1000, 'z': position['length']/1000}
+        return {'x': position['width'] / 1000, 'y': position['height'] / 1000, 'z': position['length'] / 1000}
 
     def getSizeReverse(self):
-        return {'height': self.__constHeight/1000, 'width': self.__constLength/1000,  'length': self.__constWidth/1000}
+        return {'height': self.__constHeight / 1000, 'width': self.__constLength / 1000,
+                'length': self.__constWidth / 1000}
 
     def getCalculatedSize(self):
-        return {'height': self.height/1000, 'length': self.length/1000, 'width': self.width/1000}
+        return {'height': self.height / 1000, 'length': self.length / 1000, 'width': self.width / 1000}
 
     # rotate box clockwise by 90 degrees along the selected AXIS
     def rotate(self, axis: str):
