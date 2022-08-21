@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
 
 
-    if eff1 >= eff2:
+    if eff1 + 1 >= eff2: # delete '+1' if you want to make algorithm for two containers, but beware it can contains errors
         # json encoding[START]
         aDict = {'cargoSpace': {'loading_size': container.getSize(), 'position': container.getPosition(), 'type': 'pallet'}}
 
